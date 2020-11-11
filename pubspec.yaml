@@ -12,6 +12,14 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # A composable, multi-platform, Future-based API for HTTP requests.
+  # https://pub.dev/packages/http
+  http: ^0.12.2
+
+  # A platform-independent package for parsing and serializing HTTP formats.
+  # https://pub.dev/packages/http_parser
+  http_parser: ^3.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
