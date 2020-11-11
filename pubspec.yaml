@@ -1,8 +1,8 @@
 name: one_cube_utils
-description: A new Flutter package project.
+description: Utils for One Cube
 version: 0.0.1
-author:
-homepage:
+author: naingmyothaw.nmyt@gmail.com
+homepage: https://github.com/NaingMyoThawNMYT/one_cube_utils
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
