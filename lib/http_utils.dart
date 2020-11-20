@@ -29,6 +29,7 @@ const Duration DEFAULT_TIMEOUT_DURATION = const Duration(seconds: 30);
 void get({
   @required final ValueChanged<http.Response> onResponse,
   @required final VoidCallback onTimeout,
+  @required final VoidCallback onNoInternet,
   @required final String tag,
   @required final String url,
   final Map<String, String> headers = JSON_HEADERS,
@@ -47,92 +48,106 @@ void get({
     });
   }
 
-  http.get(fullUrl, headers: headers).timeout(
-    timeoutDuration,
-    onTimeout: () {
+  try {
+    http.get(fullUrl, headers: headers).timeout(
+      timeoutDuration,
+      onTimeout: () {
+        LogUtils.printDebugLog(
+          tag,
+          '\nRequest URL: $fullUrl'
+          '\nRequest Method: $GET'
+          '\nRequest Headers: ${headers?.toString()}'
+          '\nRequest Params: ${params?.toString()}'
+          '\nRequest Timeout: $fullUrl',
+        );
+
+        if (onTimeout != null) {
+          onTimeout();
+        }
+
+        return null;
+      },
+    ).then((http.Response response) {
       LogUtils.printDebugLog(
         tag,
         '\nRequest URL: $fullUrl'
         '\nRequest Method: $GET'
         '\nRequest Headers: ${headers?.toString()}'
         '\nRequest Params: ${params?.toString()}'
-        '\nRequest Timeout: $fullUrl',
+        '\nResponse Code: ${response?.statusCode}'
+        '\nResponse Body: ${response?.body}',
       );
 
-      if (onTimeout != null) {
-        onTimeout();
+      if (onResponse != null) {
+        onResponse(response);
       }
 
-      return null;
-    },
-  ).then((http.Response response) {
-    LogUtils.printDebugLog(
-      tag,
-      '\nRequest URL: $fullUrl'
-      '\nRequest Method: $GET'
-      '\nRequest Headers: ${headers?.toString()}'
-      '\nRequest Params: ${params?.toString()}'
-      '\nResponse Code: ${response?.statusCode}'
-      '\nResponse Body: ${response?.body}',
-    );
-
-    if (onResponse != null) {
-      onResponse(response);
+      return response;
+    });
+  } on SocketException catch (_) {
+    if (onNoInternet != null) {
+      onNoInternet();
     }
-
-    return response;
-  });
+  }
 }
 
 void post({
   @required final ValueChanged<http.Response> onResponse,
   @required final VoidCallback onTimeout,
+  @required final VoidCallback onNoInternet,
   @required final String tag,
   @required final String url,
   final Map<String, String> headers = JSON_HEADERS,
   final dynamic body,
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
 }) {
-  http.post(url, headers: headers, body: body).timeout(
-    timeoutDuration,
-    onTimeout: () {
+  try {
+    http.post(url, headers: headers, body: body).timeout(
+      timeoutDuration,
+      onTimeout: () {
+        LogUtils.printDebugLog(
+          tag,
+          '\nRequest URL: $url'
+          '\nRequest Method: $POST'
+          '\nRequest Headers: ${headers?.toString()}'
+          '\nRequest Body: $body'
+          '\nRequest Timeout: $url',
+        );
+
+        if (onTimeout != null) {
+          onTimeout();
+        }
+
+        return null;
+      },
+    ).then((http.Response response) {
       LogUtils.printDebugLog(
         tag,
         '\nRequest URL: $url'
         '\nRequest Method: $POST'
         '\nRequest Headers: ${headers?.toString()}'
         '\nRequest Body: $body'
-        '\nRequest Timeout: $url',
+        '\nResponse Code: ${response?.statusCode}'
+        '\nResponse Body: ${response?.body}',
       );
 
-      if (onTimeout != null) {
-        onTimeout();
+      if (onResponse != null) {
+        onResponse(response);
       }
 
-      return null;
-    },
-  ).then((http.Response response) {
-    LogUtils.printDebugLog(
-      tag,
-      '\nRequest URL: $url'
-      '\nRequest Method: $POST'
-      '\nRequest Headers: ${headers?.toString()}'
-      '\nRequest Body: $body'
-      '\nResponse Code: ${response?.statusCode}'
-      '\nResponse Body: ${response?.body}',
-    );
-
-    if (onResponse != null) {
-      onResponse(response);
+      return response;
+    });
+  } on SocketException catch (_) {
+    if (onNoInternet != null) {
+      onNoInternet();
     }
-
-    return response;
-  });
+  }
 }
 
 void postFormData({
   @required final ValueChanged<http.StreamedResponse> onResponse,
   @required final VoidCallback onTimeout,
+  @required final VoidCallback onNoInternet,
   @required String tag,
   @required String url,
   Map<String, String> headers = JSON_HEADERS,
@@ -163,9 +178,28 @@ void postFormData({
     }
   }
 
-  request.send().timeout(
-    timeoutDuration,
-    onTimeout: () {
+  try {
+    request.send().timeout(
+      timeoutDuration,
+      onTimeout: () {
+        LogUtils.printDebugLog(
+          tag,
+          '\nRequest URL: $url'
+          '\nRequest Method: $POST'
+          '\nRequest Headers: $headers'
+          '\nRequest Key: $key'
+          '\nRequest Files: ${filePaths?.toString()}'
+          '\nRequest Body: ${params?.toString()}'
+          '\nRequest Timeout: $url',
+        );
+
+        if (onTimeout != null) {
+          onTimeout();
+        }
+
+        return null;
+      },
+    ).then((http.StreamedResponse response) {
       LogUtils.printDebugLog(
         tag,
         '\nRequest URL: $url'
@@ -174,52 +208,92 @@ void postFormData({
         '\nRequest Key: $key'
         '\nRequest Files: ${filePaths?.toString()}'
         '\nRequest Body: ${params?.toString()}'
-        '\nRequest Timeout: $url',
+        '\nResponse Code: ${response?.statusCode}'
+        '\nResponse Body: ${response?.toString()}',
       );
 
-      if (onTimeout != null) {
-        onTimeout();
+      if (onResponse != null) {
+        onResponse(response);
       }
 
-      return null;
-    },
-  ).then((http.StreamedResponse response) {
-    LogUtils.printDebugLog(
-      tag,
-      '\nRequest URL: $url'
-      '\nRequest Method: $POST'
-      '\nRequest Headers: $headers'
-      '\nRequest Key: $key'
-      '\nRequest Files: ${filePaths?.toString()}'
-      '\nRequest Body: ${params?.toString()}'
-      '\nResponse Code: ${response?.statusCode}'
-      '\nResponse Body: ${response?.toString()}',
-    );
-
-    if (onResponse != null) {
-      onResponse(response);
+      return response;
+    });
+  } on SocketException catch (_) {
+    if (onNoInternet != null) {
+      onNoInternet();
     }
-
-    return response;
-  });
+  }
 }
 
 void put({
   @required final ValueChanged<http.Response> onResponse,
   @required final VoidCallback onTimeout,
+  @required final VoidCallback onNoInternet,
   @required final String tag,
   @required final String url,
   final Map<String, String> headers = JSON_HEADERS,
   final dynamic body,
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
 }) {
-  http.put(url, headers: headers, body: body).timeout(
-    timeoutDuration,
-    onTimeout: () {
+  try {
+    http.put(url, headers: headers, body: body).timeout(
+      timeoutDuration,
+      onTimeout: () {
+        LogUtils.printDebugLog(
+          tag,
+          '\nRequest URL: $url'
+          '\nRequest Method: $PUT'
+          '\nRequest Headers: ${headers?.toString()}'
+          '\nRequest Body: $body'
+          '\nRequest Timeout: $url',
+        );
+
+        if (onTimeout != null) {
+          onTimeout();
+        }
+
+        return null;
+      },
+    ).then((http.Response response) {
       LogUtils.printDebugLog(
         tag,
         '\nRequest URL: $url'
         '\nRequest Method: $PUT'
+        '\nRequest Headers: ${headers?.toString()}'
+        '\nRequest Body: $body'
+        '\nResponse Code: ${response?.statusCode}'
+        '\nResponse Body: ${response?.body}',
+      );
+
+      if (onResponse != null) {
+        onResponse(response);
+      }
+
+      return response;
+    });
+  } on SocketException catch (_) {
+    if (onNoInternet != null) {
+      onNoInternet();
+    }
+  }
+}
+
+void delete({
+  @required final ValueChanged<http.Response> onResponse,
+  @required final VoidCallback onTimeout,
+  @required final VoidCallback onNoInternet,
+  @required final String tag,
+  @required final String url,
+  final Map<String, String> headers = JSON_HEADERS,
+  final dynamic body,
+  final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
+}) {
+  try {
+    http.delete(url, headers: headers).timeout(timeoutDuration, onTimeout: () {
+      LogUtils.printDebugLog(
+        tag,
+        '\nRequest URL: $url'
+        '\nRequest Method: $DELETE'
         '\nRequest Headers: ${headers?.toString()}'
         '\nRequest Body: $body'
         '\nRequest Timeout: $url',
@@ -230,65 +304,26 @@ void put({
       }
 
       return null;
-    },
-  ).then((http.Response response) {
-    LogUtils.printDebugLog(
-      tag,
-      '\nRequest URL: $url'
-      '\nRequest Method: $PUT'
-      '\nRequest Headers: ${headers?.toString()}'
-      '\nRequest Body: $body'
-      '\nResponse Code: ${response?.statusCode}'
-      '\nResponse Body: ${response?.body}',
-    );
+    }).then((http.Response response) {
+      LogUtils.printDebugLog(
+        tag,
+        '\nRequest URL: $url'
+        '\nRequest Method: $DELETE'
+        '\nRequest Headers: ${headers?.toString()}'
+        '\nRequest Body: $body'
+        '\nResponse Code: ${response?.statusCode}'
+        '\nResponse Body: ${response?.body}',
+      );
 
-    if (onResponse != null) {
-      onResponse(response);
+      if (onResponse != null) {
+        onResponse(response);
+      }
+
+      return response;
+    });
+  } on SocketException catch (_) {
+    if (onNoInternet != null) {
+      onNoInternet();
     }
-
-    return response;
-  });
-}
-
-void delete({
-  @required final ValueChanged<http.Response> onResponse,
-  @required final VoidCallback onTimeout,
-  @required final String tag,
-  @required final String url,
-  final Map<String, String> headers = JSON_HEADERS,
-  final dynamic body,
-  final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
-}) {
-  http.delete(url, headers: headers).timeout(timeoutDuration, onTimeout: () {
-    LogUtils.printDebugLog(
-      tag,
-      '\nRequest URL: $url'
-      '\nRequest Method: $DELETE'
-      '\nRequest Headers: ${headers?.toString()}'
-      '\nRequest Body: $body'
-      '\nRequest Timeout: $url',
-    );
-
-    if (onTimeout != null) {
-      onTimeout();
-    }
-
-    return null;
-  }).then((http.Response response) {
-    LogUtils.printDebugLog(
-      tag,
-      '\nRequest URL: $url'
-      '\nRequest Method: $DELETE'
-      '\nRequest Headers: ${headers?.toString()}'
-      '\nRequest Body: $body'
-      '\nResponse Code: ${response?.statusCode}'
-      '\nResponse Body: ${response?.body}',
-    );
-
-    if (onResponse != null) {
-      onResponse(response);
-    }
-
-    return response;
-  });
+  }
 }
