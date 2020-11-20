@@ -26,7 +26,7 @@ const JSON_HEADERS = const {
 
 const Duration DEFAULT_TIMEOUT_DURATION = const Duration(seconds: 30);
 
-void get({
+Future<void> get({
   @required final ValueChanged<http.Response> onResponse,
   @required final VoidCallback onTimeout,
   @required final VoidCallback onNoInternet,
@@ -35,7 +35,7 @@ void get({
   final Map<String, String> headers = JSON_HEADERS,
   final Map<String, String> params,
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
-}) {
+}) async {
   String fullUrl = url;
 
   if (params != null && params.isNotEmpty && params.length > 0) {
@@ -49,7 +49,7 @@ void get({
   }
 
   try {
-    http.get(fullUrl, headers: headers).timeout(
+    await http.get(fullUrl, headers: headers).timeout(
       timeoutDuration,
       onTimeout: () {
         LogUtils.printDebugLog(
@@ -91,7 +91,7 @@ void get({
   }
 }
 
-void post({
+Future<void> post({
   @required final ValueChanged<http.Response> onResponse,
   @required final VoidCallback onTimeout,
   @required final VoidCallback onNoInternet,
@@ -100,9 +100,9 @@ void post({
   final Map<String, String> headers = JSON_HEADERS,
   final dynamic body,
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
-}) {
+}) async {
   try {
-    http.post(url, headers: headers, body: body).timeout(
+    await http.post(url, headers: headers, body: body).timeout(
       timeoutDuration,
       onTimeout: () {
         LogUtils.printDebugLog(
@@ -179,7 +179,7 @@ void postFormData({
   }
 
   try {
-    request.send().timeout(
+    await request.send().timeout(
       timeoutDuration,
       onTimeout: () {
         LogUtils.printDebugLog(
@@ -225,7 +225,7 @@ void postFormData({
   }
 }
 
-void put({
+Future<void> put({
   @required final ValueChanged<http.Response> onResponse,
   @required final VoidCallback onTimeout,
   @required final VoidCallback onNoInternet,
@@ -234,9 +234,9 @@ void put({
   final Map<String, String> headers = JSON_HEADERS,
   final dynamic body,
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
-}) {
+}) async {
   try {
-    http.put(url, headers: headers, body: body).timeout(
+    await http.put(url, headers: headers, body: body).timeout(
       timeoutDuration,
       onTimeout: () {
         LogUtils.printDebugLog(
@@ -278,7 +278,7 @@ void put({
   }
 }
 
-void delete({
+Future<void> delete({
   @required final ValueChanged<http.Response> onResponse,
   @required final VoidCallback onTimeout,
   @required final VoidCallback onNoInternet,
@@ -287,9 +287,10 @@ void delete({
   final Map<String, String> headers = JSON_HEADERS,
   final dynamic body,
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
-}) {
+}) async {
   try {
-    http.delete(url, headers: headers).timeout(timeoutDuration, onTimeout: () {
+    await http.delete(url, headers: headers).timeout(timeoutDuration,
+        onTimeout: () {
       LogUtils.printDebugLog(
         tag,
         '\nRequest URL: $url'
