@@ -1,6 +1,6 @@
 name: one_cube_utils
 description: Utils for One Cube
-version: 0.0.2
+version: 0.0.3
 author: naingmyothaw.nmyt@gmail.com
 homepage: https://github.com/NaingMyoThawNMYT/one_cube_utils
 
@@ -14,11 +14,11 @@ dependencies:
 
   # A composable, multi-platform, Future-based API for HTTP requests.
   # https://pub.dev/packages/http
-  http: ^0.12.2
+  http: ^0.13.3
 
   # A platform-independent package for parsing and serializing HTTP formats.
   # https://pub.dev/packages/http_parser
-  http_parser: ^3.1.4
+  http_parser: ^4.0.0
 
 dev_dependencies:
   flutter_test:

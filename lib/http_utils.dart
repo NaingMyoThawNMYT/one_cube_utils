@@ -49,7 +49,7 @@ Future<void> get({
   }
 
   try {
-    await http.get(fullUrl, headers: headers).timeout(
+    await http.get(Uri.parse(fullUrl), headers: headers).timeout(
       timeoutDuration,
       onTimeout: () {
         LogUtils.printDebugLog(
@@ -102,7 +102,7 @@ Future<void> post({
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
 }) async {
   try {
-    await http.post(url, headers: headers, body: body).timeout(
+    await http.post(Uri.parse(url), headers: headers, body: body).timeout(
       timeoutDuration,
       onTimeout: () {
         LogUtils.printDebugLog(
@@ -236,7 +236,7 @@ Future<void> put({
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
 }) async {
   try {
-    await http.put(url, headers: headers, body: body).timeout(
+    await http.put(Uri.parse(url), headers: headers, body: body).timeout(
       timeoutDuration,
       onTimeout: () {
         LogUtils.printDebugLog(
@@ -289,7 +289,7 @@ Future<void> delete({
   final Duration timeoutDuration = DEFAULT_TIMEOUT_DURATION,
 }) async {
   try {
-    await http.delete(url, headers: headers).timeout(timeoutDuration,
+    await http.delete(Uri.parse(url), headers: headers).timeout(timeoutDuration,
         onTimeout: () {
       LogUtils.printDebugLog(
         tag,
